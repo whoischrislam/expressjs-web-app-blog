@@ -12,6 +12,11 @@ app.get('/', (req, res) => {
     res.render('index.ejs');
 });
 
+app.post('/submit', (req, res) => {
+    console.log(req.body);
+    res.send('Data received');
+});
+
 app.listen(port, () => {
   console.log(`Server is running on port http://localhost:${port}`);
 });

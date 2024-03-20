@@ -1,6 +1,16 @@
+// Import statements
 import express from 'express';
 import bodyParser from 'body-parser';
+import dotenv from 'dotenv';
+import { createClient } from '@supabase/supabase-js';
 
+// Initialize dotenv
+dotenv.config();
+
+// Create a new Supabase client
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+
+// Create a new Express app
 const app = express();
 const port = 3000;
 
@@ -32,7 +42,6 @@ app.post('/submit', (req, res) => {
       dateTime: new Date().toLocaleString()
     };
     posts.unshift(newPost);
-    // console.log(`New post added: ID: ${newPost.id}|| TITLE: ${newPost.title}|| CONTENT: ${newPost.content}|| DATE: ${newPost.dateTime}`);
     res.redirect('/');
 });
 

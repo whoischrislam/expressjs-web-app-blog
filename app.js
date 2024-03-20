@@ -10,39 +10,61 @@ dotenv.config();
 // Create a new Supabase client
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
+// testing supabase
+const dataDb = await supabase.from('posts').select("*").order('created_at', { ascending: false });
+
 // Create a new Express app
 const app = express();
 const port = 3000;
 
-let idCount = 1;
 
-const posts = [
-  {
-    id: 1,
-    title: 'Initial Post of my new blog!',
-    content: 'I just wanted to share to the world this blog! I hope you like it!',
-    dateTime: new Date().toLocaleString()
+async function createPost(post) {
+  try {
+    // Assuming `post` is an object containing data to be inserted
+    const response = await supabase
+      .from('posts')
+      .insert(post);
+
+    // Extracting data and error from the response object
+    const data = response.data;
+    const error = response.error;
+
+    return { data, error };
+  } catch (error) {
+    // Handle any errors that occur during the insertion process
+    console.error('Error creating post:', error.message);
+    return { error };
   }
-];
+}
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
-  res.render('index.ejs', {posts: posts });
+  res.render('index.ejs', {posts: dataDb.data });
 });
 
-app.post('/submit', (req, res) => {
-    idCount++;
-    const newPost = {
-      id: idCount,
-      title: req.body.postTitle,
-      content: req.body.postContent,
-      dateTime: new Date().toLocaleString()
-    };
-    posts.unshift(newPost);
-    res.redirect('/');
+app.post('/submit', async (req, res) => {
+  try {
+      const newPost = {
+          title: req.body.postTitle,
+          content: req.body.postContent
+      };
+
+      const { data, error } = await createPost(newPost);
+
+      if (error) {
+          console.error('Error creating post:', error.message);
+          // Handle the error appropriately
+      }
+
+      res.redirect('/');
+  } catch (error) {
+      console.error('Error creating post:', error.message);
+      // Handle any unexpected errors
+      res.status(500).send('Internal Server Error');
+  }
 });
 
 app.post('/delete', (req, res) => {

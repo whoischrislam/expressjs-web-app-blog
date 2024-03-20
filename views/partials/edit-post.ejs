@@ -1,0 +1,14 @@
+
+<!-- Modularize later -->
+<form action="/edit" method="POST">
+    <input type="hidden" name="editPostId" value="<%=post.id%>">
+    <div>
+        <label for="editPostTitle">Edit Post Title</label>
+        <input type="text" id="editPostTitle" name="editPostTitle" value="<%=post.title%>" required>
+    </div>
+    <div>
+        <label for="editPostContent">Edit Content</label>
+        <textarea id="editPostContent" name="editPostContent" required><%=post.content%></textarea>
+    </div>
+    <button type="submit">Save Edit</button>
+</form>

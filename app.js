@@ -4,17 +4,24 @@ import bodyParser from 'body-parser';
 const app = express();
 const port = 3000;
 
+const posts = [];
+
 app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(bodyParser.json());
+app.use(bodyParser.json());
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
-    res.render('index.ejs');
+  res.render('index.ejs', {posts: posts });
 });
 
 app.post('/submit', (req, res) => {
-    console.log(req.body);
-    res.send('Data received');
+    const newPost = {
+      title: req.body.postTitle,
+      content: req.body.postContent,
+      dateTime: new Date().toLocaleString()
+    };
+    posts.unshift(newPost);
+    res.redirect('/');
 });
 
 app.listen(port, () => {

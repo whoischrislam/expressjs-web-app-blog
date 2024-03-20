@@ -1,1 +1,11 @@
-<form id="create-post"
+<form id="create-post" action="/submit" method="POST">
+    <div>
+        <label for="postTitle">Post Title</label>
+        <input type="text" id="postTitle" name="postTitle" required>
+    </div>
+    <div>
+        <label for="postContent">Content</label>
+        <textarea id="postContent" name="postContent" required></textarea>
+    </div>
+    <button type="submit">Create Post</button>
+</form>
